@@ -24,12 +24,10 @@ namespace CORE.Api
             services.AddControllers();
             services.AddOptions();
             services.Configure<GlobalSettings>(Configuration.GetSection(nameof(GlobalSettings)));
-            
 
             var globalSettings = new GlobalSettings();
             Configuration.GetSection(nameof(GlobalSettings)).Bind(globalSettings);
             services.AddSingleton(globalSettings);
-
             services.AddEasyCaching(options =>
             {
                 options.UseRedis(redisConfig =>
@@ -43,7 +41,7 @@ namespace CORE.Api
             services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
             services.AddScoped<IRouletteRepository, RouletteRepository>();
             services.AddScoped<IBetRepository, BetRepository>();
-            //services.AddScoped<IRepository>();
+            services.AddSwaggerGen();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -63,6 +61,15 @@ namespace CORE.Api
             {
                 endpoints.MapControllers();
             });
+
+            var swaggerSettings = new SwaggerSettings();
+            Configuration.GetSection(nameof(SwaggerSettings)).Bind(swaggerSettings);
+            app.UseSwagger(option => { option.RouteTemplate = swaggerSettings.JsonRoute; });
+            app.UseSwaggerUI(option =>
+            {
+                option.SwaggerEndpoint(swaggerSettings.UiEndpoint, swaggerSettings.Description);
+            });
+
         }
     }
 }

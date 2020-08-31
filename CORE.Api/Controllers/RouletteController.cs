@@ -22,7 +22,7 @@ namespace CORE.Api.Controllers
         /// <summary>
         /// Roulette Create
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Roulette</returns>
         [HttpPost]
         public IActionResult Create()
         {
@@ -51,7 +51,7 @@ namespace CORE.Api.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="betRequest"></param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         [HttpPost("bet")]
         public IActionResult Bet([FromHeader(Name = "userId")] string userId, [FromBody] BetRequest betRequest)
         {
@@ -79,7 +79,7 @@ namespace CORE.Api.Controllers
         /// Roulette Close
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>Bets</returns>
         [HttpPut("close/{id}")]
         public IActionResult Close([FromRoute(Name = "id")] string id)
         {
@@ -97,7 +97,7 @@ namespace CORE.Api.Controllers
         /// <summary>
         /// Roulette List
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Roulettes</returns>
         [HttpGet]
         public IActionResult Get()
         {

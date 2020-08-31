@@ -5,8 +5,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="EasyCaching.InMemory" Version="0.8.8" />
-        <PackageReference Include="EasyCaching.Redis" Version="0.8.8" />
+        <PackageReference Include="EasyCaching.InMemory" Version="0.8.11" />
+        <PackageReference Include="EasyCaching.Redis" Version="0.8.11" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.2" />
     </ItemGroup>
 
 </Project>
