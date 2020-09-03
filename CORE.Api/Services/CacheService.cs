@@ -33,7 +33,6 @@ namespace CORE.Api.Services
             }
             return new List<T>(roulettes.Select(x => x.Value.Value));
         }
-
         public T SetCacheService(string cacheKey,string id, T objectSetCache)
         {
             _distributedCache.Set($"{cacheKey}{id}", objectSetCache, TimeSpan.FromDays(settings.Value.ExpireDays));

@@ -11,13 +11,11 @@ namespace CORE.Api.Controllers
     [ApiController]
     public class RouletteController : ControllerBase
     {
-        private readonly IRouletteRepository _rouletteRepository;
-        private readonly IBetRepository _betRepository;
+        private readonly IRepository _repository;
 
-        public RouletteController(IRouletteRepository rouletteRepository, IBetRepository betRepository)
+        public RouletteController(IRepository repository)
         {
-            _rouletteRepository = rouletteRepository;
-            _betRepository = betRepository;
+            _repository = repository;
         }
         /// <summary>
         /// Roulette Create
@@ -26,7 +24,7 @@ namespace CORE.Api.Controllers
         [HttpPost]
         public IActionResult Create()
         {
-            var roulette = _rouletteRepository.Create();
+            var roulette = _repository.RouletteRepository.Create();
             return Ok(roulette);
         }
         /// <summary>
@@ -37,12 +35,12 @@ namespace CORE.Api.Controllers
         [HttpPut("open/{id}")]
         public IActionResult OPen([FromRoute(Name = "id")] string id)
         {
-            var roulette = _rouletteRepository.Read(id);
+            var roulette = _repository.RouletteRepository.Read(id);
 
             roulette.Open = true;
             roulette.OpenDate = DateTime.UtcNow;
 
-            var rouletteOpen = _rouletteRepository.Update(id, roulette);
+            var rouletteOpen = _repository.RouletteRepository.Update(id, roulette);
 
             return Ok(rouletteOpen.Open);
         }
@@ -59,7 +57,7 @@ namespace CORE.Api.Controllers
             {
                 return BadRequest();
             }
-            var roulette = _rouletteRepository.Read(betRequest.RouletteId);
+            var roulette = _repository.RouletteRepository.Read(betRequest.RouletteId);
             if (!roulette.Open)
             {
                 return BadRequest();
@@ -72,7 +70,7 @@ namespace CORE.Api.Controllers
                 BetNumber = betRequest.BetNumber,
                 CreateDate = DateTime.UtcNow
             };
-            var betCreate = _betRepository.Create(bet);
+            var betCreate = _repository.BetRepository.Create(bet);
             return Ok(betCreate);
         }
         /// <summary>
@@ -84,13 +82,13 @@ namespace CORE.Api.Controllers
         public IActionResult Close([FromRoute(Name = "id")] string id)
         {
             List<Bet> bets = null;
-            var roulette = _rouletteRepository.Read(id);
+            var roulette = _repository.RouletteRepository.Read(id);
             if (roulette.Open == true)
             {
                 roulette.Open = false;
                 roulette.CloseDate = DateTime.UtcNow;
-                var rouletteOpen = _rouletteRepository.Update(id, roulette);
-                bets = _betRepository.Read().Where(b => b.RouletteId == roulette.Id).ToList();
+                var rouletteOpen = _repository.RouletteRepository.Update(id, roulette);
+                bets = _repository.BetRepository.Read().Where(b => b.RouletteId == roulette.Id).ToList();
             }
             return Ok(bets);
         }
@@ -101,8 +99,24 @@ namespace CORE.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var roulette = _rouletteRepository.Read();
+            var roulette = _repository.RouletteRepository.Read();
             return Ok(roulette);
         }
+        /// <summary>
+        /// Play Roulette
+        /// </summary>
+        /// <param name="playRequest"></param>
+        /// <returns></returns>
+        [HttpPost("playroulette")]
+        public IActionResult PlayRoulette([FromBody] PlayRequest playRequest)
+        {
+            var roulette = _repository.RouletteRepository.Read();
+            return Ok(roulette);
+        }
+    }
+    public class PlayRequest
+    {
+        public string RouletteId { get; set; }
+        public int NumberId { get; set; }
     }
 }

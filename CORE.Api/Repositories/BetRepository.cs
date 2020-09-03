@@ -1,7 +1,5 @@
 ﻿using CORE.Api.Models;
 using CORE.Api.Services;
-using CORE.Commons.Tools;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +13,6 @@ namespace CORE.Api.Repositories
         {
             _cacheService = cacheService;
         }
-
         public Bet Create(Bet bet)
         {
             var id = Guid.NewGuid().ToString();
