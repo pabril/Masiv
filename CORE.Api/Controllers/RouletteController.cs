@@ -110,13 +110,25 @@ namespace CORE.Api.Controllers
         [HttpPost("playroulette")]
         public IActionResult PlayRoulette([FromBody] PlayRequest playRequest)
         {
-            var roulette = _repository.RouletteRepository.Read();
-            return Ok(roulette);
+            if (!ModelState.IsValid) { return BadRequest(); }
+            var roulette = _repository.RouletteRepository.Read(playRequest.RouletteId);
+            //if (roulette.Open) { return BadRequest(new { error = true, msg = "Roulette is open" }); }
+            var bets = _repository.BetRepository.Read().Where(b => b.RouletteId == roulette.Id).ToList();
+            PlayResponse playResponse = new PlayResponse
+            {
+                PlayRequest = playRequest,
+                Roulette = roulette
+            };
+            var winn = new List<Bet> { };
+            var lose = new List<Bet> { };
+            bets.ForEach(delegate (Bet b)
+            {
+                if (playRequest.NumberId == b.BetNumber) { winn.Add(b); }
+                else { lose.Add(b); }
+            });
+            playResponse.Winners = winn;
+            playResponse.Losers = lose;
+            return Ok(playResponse);
         }
-    }
-    public class PlayRequest
-    {
-        public string RouletteId { get; set; }
-        public int NumberId { get; set; }
     }
 }
